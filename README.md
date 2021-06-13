@@ -1,4 +1,4 @@
 # scala-course
 
-Exercises from course https://www.coursera.org/specializations/scala
+Exercises from the course https://www.coursera.org/specializations/scala
 
