@@ -21,7 +21,7 @@ class ListsSuite extends munit.FunSuite:
   }
 
   test("one plus one is three (0pts)?") {
-    assert(1 + 1 == 3) // This assertion fails! Go ahead and fix it.
+    assert(1 + 1 == 2) // This assertion fails! Go ahead and fix it.
   }
 
   /**
@@ -57,7 +57,7 @@ class ListsSuite extends munit.FunSuite:
    * when writing tests.
    */
   test("details why one plus one is not three (0pts)") {
-    assertEquals(1 + 1, 3) // Fix me, please!
+    assertEquals(1 + 1, 2) // Fix me, please!
   }
 
   /**
@@ -102,10 +102,41 @@ class ListsSuite extends munit.FunSuite:
     assert(sum(List(1,2,0)) == 3)
   }
 
+  test("sum of empty list") {
+    assertEquals(sum(List()), 0)
+  }
+
+  test("sum with negative numbers") {
+    assertEquals(sum(List(1,-3,4,-4)), -2)
+  }
+
+  test("sum with 0") {
+    assertEquals(sum(List(5, -3, 0)), 2)
+  }
+
   test("max of a few numbers (10pts)") {
     assert(max(List(3, 7, 2)) == 7)
   }
 
+  test("max with negative numbers") {
+    assertEquals(max(List(-3,2,1)), 2)
+  }
+
+  test("max with 0") {
+    assertEquals(max(List(0, 2, -5)), 2)
+  }
+
+  test("max with duplicates") {
+    assertEquals(max(List(3, 1, 3)), 3)
+  }
+
+  test("max with empty list") {
+    try
+      max(List())
+      fail("should throw NoSuchElementException")
+    catch
+      case e: NoSuchElementException => ()
+  }
 
 
   import scala.concurrent.duration.*
