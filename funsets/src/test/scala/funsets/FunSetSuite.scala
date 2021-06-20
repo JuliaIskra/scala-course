@@ -44,7 +44,7 @@ class FunSetSuite extends munit.FunSuite:
    * Once you finish your implementation of "singletonSet", remove the
    * .ignore annotation.
    */
-  test("singleton set one contains one".ignore) {
+  test("singleton set one contains one") {
 
     /**
      * We create a new instance of the "TestSets" trait, this gives us access
@@ -55,7 +55,8 @@ class FunSetSuite extends munit.FunSuite:
        * The string argument of "assert" is a message that is printed in case
        * the test fails. This helps identifying which assertion failed.
        */
-      assert(contains(s1, 1), "Singleton")
+      assert(contains(s1, 1), "Singleton 1")
+      assert(!contains(s1, 2), "Singleton 2")
   }
 
   test("union contains all elements of each set") {
@@ -66,6 +67,61 @@ class FunSetSuite extends munit.FunSuite:
       assert(!contains(s, 3), "Union 3")
   }
 
+  test("intersection test") {
+    new TestSets:
+      val s12 = union(s1, s2)
+      val s23 = union(s2, s3)
+      val interS = intersect(s12, s23)
+      assert(contains(interS, 2), "intersection should contain common element")
+      assert(!contains(interS, 1), "intersection should not contains element from set 1")
+      assert(!contains(interS, 3), "intersection should not contain element from set 2")
+  }
+
+  test("diff test") {
+    new TestSets:
+      val s12 = union(s1, s2)
+
+      assert(contains(diff(s12, s1), 2))
+      assert(!contains(diff(s12, s1), 1))
+
+      assert(contains(diff(s12, s3), 1))
+      assert(contains(diff(s12, s3), 2))
+
+      assert(contains(diff(s3, s12), 3))
+  }
+
+  test("filter test") {
+    new TestSets:
+      assert(contains(filter(s1, x => x > 0), 1))
+      assert(!contains(filter(s1, x => x < 0), 1))
+  }
+
+  test("test forall") {
+    new TestSets:
+      val s = union(union(s1, s2), s3)
+      assert(forall(s, x => x > 0))
+      assert(!forall(s, x => x < 0))
+      assert(!forall(s, x => x < 2))
+  }
+
+  test("test exists") {
+    new TestSets:
+      val s = union(union(s1, s2), s3)
+      assert(exists(s, x => x > 0))
+      assert(!exists(s, x => x < 0))
+      assert(exists(s, x => x < 2))
+  }
+
+  test("test map") {
+    new TestSets:
+      val s = union(union(s1, s2), s3)
+      val mapS = map(s, x => x * 2)
+      assert(!contains(mapS, 1))
+      assert(!contains(mapS, 3))
+      assert(contains(mapS, 2))
+      assert(contains(mapS, 4))
+      assert(contains(mapS, 6))
+  }
 
 
   import scala.concurrent.duration.*
