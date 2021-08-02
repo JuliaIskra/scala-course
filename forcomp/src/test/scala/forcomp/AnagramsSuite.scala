@@ -93,6 +93,13 @@ class AnagramsSuite extends munit.FunSuite:
     assertEquals(sentenceAnagrams(sentence).toSet, anas.toSet)
   }
 
+  test("sentence anagrams: no") {
+    val sentence = List("no")
+    val anas = List(
+      List("no"),
+      List("on"))
+    assertEquals(sentenceAnagrams(sentence).toSet, anas.toSet)
+  }
 
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds
