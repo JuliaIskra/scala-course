@@ -1,6 +1,6 @@
 package streams
 
-import Bloxorz.*
+import streams.Bloxorz.*
 
 class BloxorzSuite extends munit.FunSuite:
   trait SolutionChecker extends GameDef with Solver with StringParserTerrain:
@@ -64,6 +64,33 @@ class BloxorzSuite extends munit.FunSuite:
   test("optimal solution length for level 1 (5pts)") {
     new Level1:
       assertEquals(solution.length, optsolution.length)
+  }
+
+  test("calculate neighbors with history") {
+    new Level1:
+      import Move.*
+      val n = neighborsWithHistory(Block(Pos(1, 1), Pos(1, 1)), List(Left, Up))
+      assertEquals(n.size, 2)
+      assertEquals(n.apply(0), (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)))
+      assertEquals(n.apply(1), (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up)))
+  }
+
+  test("avoid circles") {
+    new Level1:
+      import Move.*
+
+      val n = newNeighborsOnly(
+        Set(
+          (Block(Pos(1, 2), Pos(1, 3)), List(Right, Left, Up)),
+          (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+        ).to(LazyList),
+
+        Set(Block(Pos(1, 2), Pos(1, 3)), Block(Pos(1, 1), Pos(1, 1)))
+      )
+
+      assertEquals(n, Set(
+        (Block(Pos(2, 1), Pos(3, 1)), List(Down, Left, Up))
+      ).to(LazyList))
   }
 
 
