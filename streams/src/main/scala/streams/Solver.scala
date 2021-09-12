@@ -27,9 +27,9 @@ trait Solver extends GameDef:
    * It should only return valid neighbors, i.e. block positions
    * that are inside the terrain.
    */
-  def neighborsWithHistory(b: Block, history: List[Move]): LazyList[(Block, List[Move])] =
+  def neighborsWithHistory(b: Block, history: List[Move]): List[(Block, List[Move])] =
     for {
-      (nBlock, move) <- b.legalNeighbors.to(LazyList)
+      (nBlock, move) <- b.legalNeighbors
       result = (nBlock, move :: history)
     } yield result
 
@@ -38,8 +38,8 @@ trait Solver extends GameDef:
    * positions that have already been explored. We will use it to
    * make sure that we don't explore circular paths.
    */
-  def newNeighborsOnly(neighbors: LazyList[(Block, List[Move])],
-                       explored: Set[Block]): LazyList[(Block, List[Move])] =
+  def newNeighborsOnly(neighbors: List[(Block, List[Move])],
+                       explored: Set[Block]): List[(Block, List[Move])] =
     for {
       (block, moves) <- neighbors
       if !explored.contains(block)
@@ -68,12 +68,12 @@ trait Solver extends GameDef:
    * of different paths - the implementation should naturally
    * construct the correctly sorted lazy list.
    */
-  def from(initial: LazyList[(Block, List[Move])],
-           explored: Set[Block]): LazyList[LazyList[(Block, List[Move])]] =
+  def from(initial: List[(Block, List[Move])],
+           explored: Set[Block]): LazyList[List[(Block, List[Move])]] =
     val nextSteps =
       for {
         (block, moves) <- initial
-        nextStep <- newNeighborsOnly(neighborsWithHistory(block, moves), explored.incl(block))
+        nextStep <- newNeighborsOnly(neighborsWithHistory(block, moves), explored)
       } yield nextStep
 
     initial #:: from(nextSteps, explored ++ nextSteps.map(_._1))
@@ -81,7 +81,7 @@ trait Solver extends GameDef:
   /**
    * The lazy list of all paths that begin at the starting block.
    */
-  lazy val pathsFromStart: LazyList[(Block, List[Move])] = LazyList((startBlock, List()))
+  lazy val pathsFromStart: List[(Block, List[Move])] = List((startBlock, List()))
 
   /**
    * Returns a lazy list of all possible pairs of the goal block along
