@@ -200,7 +200,15 @@ trait DecoderInstances:
     */
   given [A] (using decoder: Decoder[A]): Decoder[List[A]] = 
     Decoder.fromFunction {
-      ???
+      case Json.Arr(items) =>
+        val result = items.map(decoder.decode)
+        if (result.forall(_.isDefined)) {
+          Some(result.map(_.get))
+        } else {
+          None
+        }
+
+      case _ => None
     }
 
   /**
@@ -252,12 +260,14 @@ object Main:
     println(renderJson("foo"))
 
     val maybeJsonString = parseJson(""" "foo" """)
-    val maybeJsonObj    = parseJson(""" { "name": "Alice", "age": 42 } """)
-    val maybeJsonObj2   = parseJson(""" { "name": "Alice", "age": "42" } """)
-    // Uncomment the following lines as you progress in the assignment
     println(maybeJsonString.flatMap(_.decodeAs[Int]))
     println(maybeJsonString.flatMap(_.decodeAs[String]))
-    // println(maybeJsonObj.flatMap(_.decodeAs[Person]))
-    // println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
-    // println(renderJson(Person("Bob", 66)))
+
+    val maybeJsonObj = parseJson(""" { "name": "Alice", "age": 42 } """)
+    println(maybeJsonObj.flatMap(_.decodeAs[Person]))
+
+    val maybeJsonObj2 = parseJson(""" { "name": "Alice", "age": "42" } """)
+    println(maybeJsonObj2.flatMap(_.decodeAs[Person]))
+
+    println(renderJson(Person("Bob", 66)))
 

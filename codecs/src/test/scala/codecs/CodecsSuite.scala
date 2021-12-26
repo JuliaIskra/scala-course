@@ -71,6 +71,11 @@ class CodecsSuite
     checkProperty(Prop.forAll((xs: List[Int]) => encodeAndThenDecodeProp(xs)))
   }
 
+  test("the 'List' decoder should return None for invalid values values") {
+    val decoded = implicitly[Decoder[Int]].decode(Json.Arr(List(Json.Num(1), Json.Num(2.3))))
+    assert(decoded.isEmpty, "decoding array with invalid value should fail")
+  }
+
   test("a 'Person' value should be encoded as a JSON object (1pt)") {
     val person = Person("Alice", 42)
     val json = Json.Obj(Map("name" -> Json.Str("Alice"), "age" -> Json.Num(42)))
