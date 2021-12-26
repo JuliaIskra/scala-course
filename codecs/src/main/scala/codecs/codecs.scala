@@ -216,7 +216,10 @@ trait DecoderInstances:
     * the supplied `name` using the given `decoder`.
     */
   def field[A](name: String)(using decoder: Decoder[A]): Decoder[A] =
-    ???
+    Decoder.fromFunction {
+      case Json.Obj(fields) => decoder.decode(fields(name))
+      case _ => None
+    }
 
 
 case class Person(name: String, age: Int)
@@ -262,6 +265,10 @@ object Main:
     val maybeJsonString = parseJson(""" "foo" """)
     println(maybeJsonString.flatMap(_.decodeAs[Int]))
     println(maybeJsonString.flatMap(_.decodeAs[String]))
+
+    val xField = ObjectEncoder.field[Int]("x")
+    val json = xField.encode(84)
+    println(json.decodeAs(using Decoder.field("x")(using Decoder.given_Decoder_Int)))
 
     val maybeJsonObj = parseJson(""" { "name": "Alice", "age": 42 } """)
     println(maybeJsonObj.flatMap(_.decodeAs[Person]))
