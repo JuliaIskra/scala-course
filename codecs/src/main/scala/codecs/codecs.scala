@@ -236,7 +236,9 @@ trait PersonCodecs:
 
   /** The corresponding decoder for `Person` */
   given Decoder[Person] =
-    ???
+    Decoder.field[String]("name")
+      .zip(Decoder.field[Int]("age"))
+      .transform[Person]((name, age) => Person(name, age))
 
 
 case class Contacts(people: List[Person])
@@ -268,7 +270,7 @@ object Main:
 
     val xField = ObjectEncoder.field[Int]("x")
     val json = xField.encode(84)
-    println(json.decodeAs(using Decoder.field("x")(using Decoder.given_Decoder_Int)))
+    println(json.decodeAs(using Decoder.field[Int]("x")))
 
     val maybeJsonObj = parseJson(""" { "name": "Alice", "age": 42 } """)
     println(maybeJsonObj.flatMap(_.decodeAs[Person]))
