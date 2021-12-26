@@ -246,12 +246,17 @@ case class Contacts(people: List[Person])
 object Contacts extends ContactsCodecs
 
 trait ContactsCodecs:
-
-  // TODO Define the encoder and the decoder for `Contacts`
   // The JSON representation of a value of type `Contacts` should be
   // a JSON object with a single field named “people” containing an
   // array of values of type `Person` (reuse the `Person` codecs)
-  ()
+
+  given Encoder[Contacts] =
+    ObjectEncoder.field[List[Person]]("people")
+      .transform[Contacts](contacts => contacts.people)
+
+  given Decoder[Contacts] =
+    Decoder.field[List[Person]]("people")
+      .transform[Contacts](list => Contacts(list))
 
 
 // In case you want to try your code, here is a simple `Main`
