@@ -57,8 +57,18 @@ object HorizontalBoxBlur extends HorizontalBoxBlurInterface:
    *  rows.
    */
   def parBlur(src: Img, dst: Img, numTasks: Int, radius: Int): Unit = {
-    val splitPoints = (0 until src.height)
-      .by(Math.ceil(src.height / numTasks).toInt)
+    val size = src.height
+    val actualNumTasks = Math.min(size, numTasks)
+
+    val splitPoints = {
+      val splits = (0 until size)
+        .by(Math.ceil(size.toDouble / actualNumTasks).toInt)
+      if (splits.contains(size)) {
+        splits
+      } else {
+        splits :+ size
+      }
+    }
 
     splitPoints.zip(splitPoints.tail)
       .map((start, end) => task {
