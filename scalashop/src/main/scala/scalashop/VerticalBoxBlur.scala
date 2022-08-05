@@ -40,15 +40,15 @@ object VerticalBoxBlur extends VerticalBoxBlurInterface:
    * bottom.
    */
   def blur(src: Img, dst: Img, from: Int, end: Int, radius: Int): Unit = {
-    var currentX = from
-    while (currentX < end) {
+    var x = from
+    while (x < end) {
       var y = 0
       while (y < src.height) {
-        val blurred = boxBlurKernel(src, currentX, y, radius)
-        dst.update(currentX, y, blurred)
+        val blurred = boxBlurKernel(src, x, y, radius)
+        dst.update(x, y, blurred)
         y += 1
       }
-      currentX += 1
+      x += 1
     }
   }
 
