@@ -35,12 +35,22 @@ object ParallelParenthesesBalancingRunner:
 
 object ParallelParenthesesBalancing extends ParallelParenthesesBalancingInterface:
 
-  /** Returns `true` iff the parentheses in the input `chars` are balanced.
+  /** Returns `true` if the parentheses in the input `chars` are balanced.
    */
-  def balance(chars: Array[Char]): Boolean =
-    ???
+  def balance(chars: Array[Char]): Boolean = {
+    var balance: Int = 0
+    var negative: Boolean = false
+    chars.foreach(char => {
+      if (char == '(') balance = balance + 1
+      if (char == ')') balance = balance - 1
+      if (balance < 0) {
+        negative = true
+      }
+    })
+    !negative && balance == 0
+  }
 
-  /** Returns `true` iff the parentheses in the input `chars` are balanced.
+  /** Returns `true` if the parentheses in the input `chars` are balanced.
    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean =
 

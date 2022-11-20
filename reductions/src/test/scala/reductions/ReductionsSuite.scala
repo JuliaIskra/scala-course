@@ -116,6 +116,18 @@ class ReductionsSuite extends munit.FunSuite:
     check(").", false)
   }
 
+  test("balance should work for examples from the task") {
+    def check(input: String, expected: Boolean) =
+      assert(balance(input.toArray) == expected,
+        s"balance($input) should be $expected")
+
+    check("(if (zero? x) max (/ 1 x))", true)
+    check("I told him (that it's not (yet) done). (But he wasn't listening)", true)
+    check("(o_()", false)
+    check(":-)", false)
+    check("())(", false)
+  }
+
 
   import scala.concurrent.duration.*
   override val munitTimeout = 10.seconds
