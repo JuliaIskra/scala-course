@@ -54,15 +54,32 @@ object ParallelParenthesesBalancing extends ParallelParenthesesBalancingInterfac
    */
   def parBalance(chars: Array[Char], threshold: Int): Boolean =
 
-    def traverse(idx: Int, until: Int, arg1: Int, arg2: Int) /*: ???*/ = {
-      ???
+    def balance(from: Int, until: Int): Int = {
+      var balance: Int = 0
+      var i = from
+      while (i < until && balance >= 0) {
+        val char = chars(i)
+        if (char == '(') balance = balance + 1
+        if (char == ')') balance = balance - 1
+        i = i + 1
+      }
+      balance
     }
 
-    def reduce(from: Int, until: Int) /*: ???*/ = {
-      ???
+    def reduce(from: Int, until: Int): Int = {
+      if (until - from < threshold) {
+        balance(from, until)
+      } else {
+        val mid = from + (until - from) / 2
+        val (b1, b2) = parallel(
+          reduce(from, mid),
+          reduce(mid, until))
+        if (b1 < 0) b1
+        else b1 + b2
+      }
     }
 
-    reduce(0, chars.length) == ???
+    reduce(0, chars.length) == 0
 
   // For those who want more:
   // Prove that your reduction operator is associative!
